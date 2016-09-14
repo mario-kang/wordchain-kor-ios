@@ -108,7 +108,7 @@ class ViewController: UIViewController {
         let unicode = fex.unicodeScalars
         let a = unicode[unicode.startIndex].value - 44032
         let r = a % 28
-        let t = "\(Character(UnicodeScalar((a/28)*28+44032)))"
+        let t = "\(Character(UnicodeScalar((a/28)*28+44032)!))"
         switch t {
         case "녀":
             arr.append("여")
@@ -148,7 +148,7 @@ class ViewController: UIViewController {
         if arr[0] != arr[1] {
             let b = arr[1].unicodeScalars
             let c = b[b.startIndex].value - 44032
-            arr[1] = "\(Character(UnicodeScalar((c/28)*28+44032+r)))"
+            arr[1] = "\(Character(UnicodeScalar((c/28)*28+44032+r)!))"
         }
         return arr
     }
@@ -166,11 +166,11 @@ class ViewController: UIViewController {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if error == nil {
                     do {
-                        let dic = try JSONSerialization.jsonObject(with: data!, options: .allowFragments)
-                        self.wordvalid = (dic["valid"]??.boolValue)!
+                        let dic = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String : AnyObject]
+                        self.wordvalid = (dic?["valid"]?.boolValue)!
                         if !self.wordvalid {
                             OperationQueue.main.addOperation({
-                                let alert = UIAlertController(title: "올바르지 않은 단어입니다!", message: dic["reason"] as? String, preferredStyle: .alert)
+                                let alert = UIAlertController(title: "올바르지 않은 단어입니다!", message: dic?["reason"] as? String, preferredStyle: .alert)
                                 let action = UIAlertAction(title: "확인", style: .default, handler: nil)
                                 alert.addAction(action)
                                 self.present(alert, animated: true, completion: nil)
@@ -208,8 +208,8 @@ class ViewController: UIViewController {
             DispatchQueue.main.async {
                 if error == nil {
                     do {
-                        let dic = try JSONSerialization.jsonObject(with: data!, options: .allowFragments)
-                        let datas = dic["data"]!
+                        let dic = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String : AnyObject]
+                        let datas = dic?["data"]
                         if datas!.count == 0 {
                             OperationQueue.main.addOperation({
                                 let alert = UIAlertController(title: "승리!", message:"컴퓨터의 패배!", preferredStyle: .alert)
@@ -240,7 +240,7 @@ class ViewController: UIViewController {
                             var words:AnyObject
                             switch sc {
                             case 2:
-                                words = (datas?[Int(arc4random_uniform(datacount))])!
+                                words = (datas?[Int(arc4random_uniform(datacount))])! as AnyObject
                                 let word = words["word"] as! String
                                 self.list.append(self.textField.text!)
                                 self.list.append(word)
@@ -301,7 +301,7 @@ class ViewController: UIViewController {
                                         }
                                     }
                                 }
-                                words = (datas?[r])!
+                                words = (datas![r])! as AnyObject
                                 let word = words["word"] as! String
                                 self.list.append(self.textField.text!)
                                 self.list.append(word)
@@ -349,7 +349,7 @@ class ViewController: UIViewController {
                                         }
                                     }
                                 }
-                                words = (datas?[r])!
+                                words = (datas![r])! as AnyObject
                                 let word = words["word"] as! String
                                 self.list.append(self.textField.text!)
                                 self.list.append(word)
